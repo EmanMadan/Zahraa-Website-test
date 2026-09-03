@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Grade 1 Fun Learning Adventures</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{--primary:#FF6B6B;--secondary:#4ECDC4;--accent:#FFE66D;--dark:#2F3E46;--light:#F7FFF7;--correct:#2ecc71;--wrong:#e74c3c;}
+*{box-sizing:border-box;font-family:'Comic Sans MS','Chalkboard SE','Arial Rounded MT Bold',sans-serif;}
+body{background-color:#E0F7FA;color:var(--dark);margin:0;padding:0;}
+header{background:linear-gradient(135deg,var(--primary),#FF8E8E);color:white;padding:25px 20px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.1);position:relative;}
+.global-progress{position:absolute;top:18px;right:20px;background:rgba(255,255,255,0.3);padding:8px 16px;border-radius:20px;font-size:15px;font-weight:bold;}
+nav{display:flex;justify-content:center;background:white;padding:12px;gap:10px;overflow-x:auto;box-shadow:0 2px 5px rgba(0,0,0,0.05);}
+nav button{background:none;border:2px solid transparent;padding:10px 16px;border-radius:25px;cursor:pointer;font-weight:bold;font-size:14px;transition:all .3s;display:flex;align-items:center;gap:6px;white-space:nowrap;}
+nav button.active{background-color:var(--secondary);color:white;border-color:var(--secondary);}
+.container{max-width:1000px;margin:30px auto;padding:25px;background:white;border-radius:25px;box-shadow:0 8px 24px rgba(0,0,0,0.05);}
+.section{display:none;}
+.section.active{display:block;}
+.print-btn{background-color:#9b59b6;color:white;border:none;padding:12px 25px;border-radius:25px;font-size:16px;font-weight:bold;cursor:pointer;margin-bottom:20px;display:inline-flex;align-items:center;gap:10px;}
+.score-board{background:#fff9db;border:2px dashed #f59f00;padding:10px 20px;border-radius:15px;font-size:18px;font-weight:bold;display:inline-flex;align-items:center;gap:10px;margin-bottom:20px;}
+.letters-layout{display:flex;flex-direction:column;gap:20px;margin-top:15px;}
+.letter-row-container{background:#f8f9fa;border-radius:15px;padding:15px;border:1px solid #e9ecef;}
+.letters-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(75px,1fr));gap:12px;}
+.letter-card{background:white;border:3px solid #dee2e6;border-radius:16px;padding:12px 5px;text-align:center;cursor:pointer;font-size:26px;font-weight:bold;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.letter-card .anchor-img{font-size:20px;}
+.letter-card:hover{transform:translateY(-3px);box-shadow:0 4px 8px rgba(0,0,0,0.05);}
+.letter-card.correct{background-color:var(--correct)!important;border-color:#27ae60;color:white;cursor:default;}
+.word-box{font-size:56px;letter-spacing:8px;margin:25px 0;text-align:center;}
+.letter-span{cursor:pointer;padding:0 8px;border-radius:8px;transition:background .2s;}
+.letter-span:hover{background-color:var(--accent);}
+.letter-span.found{background-color:var(--correct);color:white;}
+.family-menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(65px,1fr));gap:8px;max-height:150px;overflow-y:auto;padding:10px;background:#f1f2f6;border-radius:10px;margin-bottom:20px;}
+.family-badge-btn{background:white;border:2px solid #ced6e0;border-radius:8px;padding:8px 5px;font-size:15px;font-weight:bold;cursor:pointer;transition:all .2s;}
+.family-badge-btn.active{background:var(--primary);color:white;border-color:var(--primary);}
+.combo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin:15px 0 30px 0;}
+.combo-learn-card{background:#ffffff;border:3px solid #e2e8f0;border-radius:18px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.combo-learn-card:hover{transform:scale(1.03);border-color:var(--secondary);box-shadow:0 6px 12px rgba(0,0,0,0.05);}
+.combo-learn-card .main-combo{font-size:36px;color:var(--primary);font-weight:bold;margin-bottom:5px;}
+.combo-learn-card .sound-tag{background:#e0f7fa;color:#00838f;padding:3px 10px;border-radius:12px;font-size:14px;display:inline-block;margin-bottom:10px;font-weight:bold;}
+.combo-learn-card .examples-list{font-size:14px;color:#555;line-height:1.4;}
+.speaker-icon{position:absolute;top:10px;right:10px;color:#b2bec3;}
+.combo-learn-card:hover .speaker-icon,.vocab-card:hover .speaker-icon{color:var(--secondary);}
+.rule-card{background:#fff;border-left:5px solid var(--secondary);padding:15px;margin:10px 0;box-shadow:0 2px 5px rgba(0,0,0,0.05);border-radius:0 10px 10px 0;}
+.grammar-box{background:#f8f9fa;border:2px solid #e9ecef;border-radius:20px;padding:25px;text-align:center;margin:20px 0;}
+.grammar-word{font-size:42px;font-weight:bold;color:var(--dark);margin-bottom:20px;}
+.choice-btn{border:3px solid #ced6e0;background:white;padding:15px 35px;font-size:22px;font-weight:bold;border-radius:15px;cursor:pointer;margin:0 10px;transition:all .2s;}
+.choice-btn:hover{background:#f1f2f6;}
+.choice-btn.selected-noun{background:var(--primary);color:white;border-color:var(--primary);}
+.choice-btn.selected-verb{background:var(--secondary);color:white;border-color:var(--secondary);}
+.feedback{text-align:center;font-size:20px;font-weight:bold;margin-top:15px;min-height:35px;}
+.ws-line{border-bottom:2px dashed #999;height:40px;margin-bottom:20px;width:80%;}
+.quiz-progress-track{background:#eee;border-radius:10px;height:14px;overflow:hidden;margin-bottom:15px;}
+.quiz-progress-fill{background:var(--secondary);height:100%;width:0%;transition:width .3s;}
+.quiz-option-btn{display:block;width:100%;text-align:left;padding:14px 22px;margin-bottom:10px;border:3px solid #ced6e0;border-radius:14px;background:white;font-size:19px;font-weight:bold;cursor:pointer;transition:all .2s;}
+.quiz-option-btn:hover{background:#f1f2f6;}
+.quiz-option-btn.correct{background:var(--correct);color:white;border-color:#27ae60;}
+.quiz-option-btn.wrong{background:var(--wrong);color:white;border-color:#c0392b;}
+.certificate{border:8px solid var(--accent);border-radius:20px;padding:40px;text-align:center;background:#fffdf5;}
+.certificate h1{font-size:30px;color:var(--primary);margin-bottom:10px;}
+.type-match-letter{font-size:90px;font-weight:bold;color:var(--primary);text-align:center;margin-bottom:6px;}
+.unit-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:18px;margin-top:20px;}
+.unit-card{background:#f8f9fa;border:3px solid #e9ecef;border-radius:20px;padding:20px;cursor:pointer;transition:all .2s;}
+.unit-card:hover{transform:translateY(-4px);border-color:var(--secondary);box-shadow:0 6px 14px rgba(0,0,0,.08);}
+.unit-card h3{margin-top:0;color:var(--primary);font-size:17px;}
+.unit-progress-track{background:#eee;border-radius:8px;height:10px;overflow:hidden;margin-top:10px;}
+.unit-progress-fill{background:var(--correct);height:100%;width:0%;transition:width .3s;}
+.sub-nav{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;}
+.sub-nav button{background:white;border:2px solid #ced6e0;border-radius:20px;padding:8px 16px;font-weight:bold;cursor:pointer;font-size:14px;}
+.sub-nav button.active{background:var(--secondary);color:white;border-color:var(--secondary);}
+.vocab-card{background:white;border:3px solid #e2e8f0;border-radius:18px;padding:22px 12px;text-align:center;cursor:pointer;transition:all .2s;position:relative;}
+.vocab-card:hover{border-color:var(--secondary);transform:scale(1.03);}
+.vocab-card .vocab-emoji{font-size:58px;line-height:1;}
+.vocab-card .vocab-word{font-weight:bold;margin-top:10px;font-size:20px;}
+.color-swatch{width:85px;height:85px;border-radius:16px;margin:0 auto 10px;border:3px solid #ddd;cursor:pointer;}
+.color-swatch-card{background:white;border:3px solid #e2e8f0;border-radius:16px;padding:16px;text-align:center;cursor:pointer;transition:all .2s;}
+.color-swatch-card:hover{transform:scale(1.05);}
+.color-swatch-card .vocab-word{font-size:19px;font-weight:bold;}
+.family-tree{display:flex;flex-direction:column;align-items:center;gap:25px;margin-top:20px;}
+.tree-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+.tree-node{background:white;border:3px solid #e2e8f0;border-radius:16px;padding:12px 16px;text-align:center;cursor:pointer;transition:all .2s;min-width:80px;}
+.tree-node:hover{border-color:var(--secondary);transform:scale(1.05);}
+.tree-node.me{border-color:var(--primary);background:#fff0f0;}
+.tree-node.visited{border-color:var(--correct);}
+.sentence-builder-line{font-size:24px;margin:18px 0;line-height:2.4;text-align:center;}
+.cap-input{width:38px;text-align:center;font-size:22px;font-weight:bold;border:3px solid #ced6e0;border-radius:8px;}
+.cap-input.correct-input{border-color:var(--correct);background:#eafff1;}
+.cap-input.wrong-input{border-color:var(--wrong);background:#fdecea;}
+.text-input-field{font-size:20px;padding:8px;border-radius:10px;border:2px solid #ced6e0;}
+.draggable{background:var(--primary);color:white;padding:10px 20px;border-radius:10px;cursor:pointer;font-size:18px;font-weight:bold;transition:all .2s;}
+.draggable.selected{outline:4px solid var(--accent);transform:scale(1.1);}
+.draggable.placed{opacity:0.55;cursor:default;}
+.drop-zone{border:3px dashed #bdc3c7;border-radius:15px;min-height:100px;padding:15px;background:#fafafa;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;cursor:pointer;}
+button,.letter-card,.vocab-card,.combo-learn-card,.tree-node,.unit-card,.color-swatch-card,.draggable,.drop-zone,.letter-span,.family-badge-btn,.sub-nav button{touch-action:manipulation;}
+.worksheet-preview{border:2px solid #ccc;padding:40px;background:white;margin-top:15px;border-radius:10px;}
+/* Whiteboard handwriting pad */
+.whiteboard-wrap{position:relative;width:260px;height:260px;margin:15px auto;background:#ffffff;border:5px solid var(--dark);border-radius:20px;box-shadow:0 4px 10px rgba(0,0,0,.12);touch-action:none;}
+.wb-canvas{position:absolute;top:0;left:0;width:100%;height:100%;border-radius:14px;touch-action:none;}
+.wb-guide-canvas{z-index:1;pointer-events:none;}
+.wb-draw-canvas{z-index:2;cursor:crosshair;background:transparent;}
+.wb-controls{text-align:center;margin:10px 0;}
+.age-pad-block{text-align:center;}
+@media print{
+body{background:white;color:black;}
+header,nav,.print-btn,.feedback,.no-print,.family-menu-grid,.score-board,.global-progress{display:none!important;}
+.container{box-shadow:none;margin:0;padding:0;max-width:100%;}
+.section{display:none!important;}
+.section.print-active{display:block!important;}
+}
+@media (max-width:600px){.global-progress{position:static;display:inline-block;margin-top:10px;}}
+</style>
+</head>
+<body>
+
+<header>
+<div class="global-progress">🌟 <span id="global-stars">0</span> Stars</div>
+<h1>🎈 Kids Academy 🎈</h1>
+<p>Fun English Grade 1 Learning Portal</p>
+</header>
+
+<nav class="no-print">
+<button class="nav-link active" data-tab="alphabet-hub" onclick="switchTab('alphabet-hub')"><i data-lucide="spell-check"></i> Alphabet Adventures</button>
+<button class="nav-link" data-tab="word-families" onclick="switchTab('word-families')"><i data-lucide="blend"></i> Word Families</button>
+<button class="nav-link" data-tab="vowels-phonics" onclick="switchTab('vowels-phonics')"><i data-lucide="ear"></i> Sound Combos</button>
+<button class="nav-link" data-tab="sight-words" onclick="switchTab('sight-words')"><i data-lucide="eye"></i> Sight Words</button>
+<button class="nav-link" data-tab="grammar" onclick="switchTab('grammar')"><i data-lucide="layers"></i> Noun or Verb</button>
+<button class="nav-link" data-tab="school-grade1" onclick="switchTab('school-grade1')"><i data-lucide="graduation-cap"></i> School Grade 1</button>
+<button class="nav-link" data-tab="quiz" onclick="switchTab('quiz')"><i data-lucide="award"></i> Final Quiz</button>
+<button class="nav-link" data-tab="printables" onclick="switchTab('printables')"><i data-lucide="printer"></i> Print Tasks</button>
+</nav>
+
+<div class="container">
+
+<!-- ================= ALPHABET ADVENTURES (GROUPED) ================= -->
+<div id="alphabet-hub" class="section active">
+<h2>🔤 Alphabet Adventures</h2>
+<div class="sub-nav" data-unit="alpha">
+<button data-sub="type" class="active" onclick="switchSubTab('alpha','type')">✍️ Write the Opposite</button>
+<button data-sub="colors" onclick="switchSubTab('alpha','colors')">🎨 Match Colors</button>
+<button data-sub="sounds" onclick="switchSubTab('alpha','sounds')">🔊 Letter Sounds</button>
+<button data-sub="find" onclick="switchSubTab('alpha','find')">🔍 Find the Letter</button>
+</div>
+
+<!-- ---- Write the Opposite (Whiteboard handwriting) ---- -->
+<div class="sub-content" data-unit="alpha" id="sub-alpha-type" style="display:block;">
+<p id="hw-instruction">Write the opposite case on the whiteboard below!</p>
+<div class="score-board">⭐ Progress: <span id="hw-score">0</span> / 26</div>
+<div class="type-match-letter" id="hw-shown-letter">A</div>
+<div class="whiteboard-wrap" id="wb-wrap-hw">
+<canvas id="wb-guide-hw" width="280" height="280" class="wb-canvas wb-guide-canvas"></canvas>
+<canvas id="wb-draw-hw" width="280" height="280" class="wb-canvas wb-draw-canvas"></canvas>
+</div>
+<div class="wb-controls">
+<button class="print-btn" style="background:#95a5a6;" onclick="clearWhiteboard('hw')">🧹 Clear</button>
+<button class="print-btn" style="background:var(--correct);" onclick="checkHandwritingMatch()">✅ Check My Writing</button>
+</div>
+<div id="hw-feedback" class="feedback"></div>
+<div style="text-align:center;"><button class="print-btn no-print" style="background-color:var(--dark);" onclick="initHandwritingMatchGame()">Restart 🔄</button></div>
+</div>
+
+<!-- ---- Match Colors ---- -->
+<div class="sub-content" data-unit="alpha" id="sub-alpha-colors" style="display:none;">
+<h3>Match Colors: Big & Small</h3>
+<p>Each big letter and its small buddy share the same color. Click a big letter, then find its color match!</p>
+<div class="score-board">⭐ Score: <span id="cm-score">0</span> / 26</div>
+<div class="letters-layout">
+<div class="letter-row-container"><h4 style="margin-top:0;">Big Letters</h4><div id="cm-caps-container" class="letters-grid"></div></div>
+<div class="letter-row-container"><h4 style="margin-top:0;">Small Letters</h4><div id="cm-smalls-container" class="letters-grid"></div></div>
+</div>
+<div id="cm-feedback" class="feedback"></div>
+<div style="text-align:center;"><button class="print-btn no-print" style="background-color:var(--dark);" onclick="initColorMatchGame()">Shuffle Again 🔀</button></div>
+</div>
+
+<!-- ---- Letter Sounds ---- -->
+<div class="sub-content" data-unit="alpha" id="sub-alpha-sounds" style="display:none;">
+<p>Tap a letter to hear the sound it makes and an example word!</p>
+<div class="score-board">🔊 Letters Explored: <span id="phonics-progress">0</span> / 26</div>
+<div id="phonics-alphabet-container" class="letters-grid"></div>
+</div>
+
+<!-- ---- Find the Letter ---- -->
+<div class="sub-content" data-unit="alpha" id="sub-alpha-find" style="display:none;">
+<p id="find-instruction">Loading target...</p>
+<div id="word-display" class="word-box"></div>
+<div id="find-feedback" class="feedback"></div>
+<div style="text-align:center;margin-top:20px;"><button class="print-btn no-print" style="background-color:var(--secondary);" onclick="nextFindWord()">Next Word ➡️</button></div>
+</div>
+</div>
+
+<!-- WORD FAMILIES -->
+<div id="word-families" class="section">
+<h2>Explore Word Families</h2>
+<p>Pick a family ending below, then see how we blend letters to form words!</p>
+<div id="family-selectors" class="family-menu-grid"></div>
+<div style="background:#f6f8fa;border-radius:15px;padding:25px;border:2px solid #e1e8ed;">
+<div style="display:flex;justify-content:center;align-items:center;gap:20px;font-size:48px;">
+<div id="family-prefix" class="letter-card" style="font-size:48px;min-width:110px;">c</div><div>+</div>
+<div id="family-suffix" style="color:var(--primary);font-weight:bold;">at</div><div>=</div>
+<div id="family-result" style="color:var(--secondary);font-weight:bold;">cat</div>
+</div>
+<div style="text-align:center;margin-top:25px;">
+<button class="print-btn" style="background-color:var(--dark);margin-bottom:0;" onclick="nextFamilyWord()">Next Word in Family 🎲</button>
+<button class="print-btn" style="background-color:var(--secondary);margin-bottom:0;" onclick="speakFamilyWord()">🔊 Hear Word</button>
+</div>
+</div>
+</div>
+
+<!-- SOUND COMBOS -->
+<div id="vowels-phonics" class="section">
+<h2>🌟 Interactive Sound Combos 🌟</h2>
+<p>Tap any card below to hear the sound team and their example words out loud!</p>
+<h3 style="color:var(--primary);margin-top:25px;">Consonant Secret Combos</h3>
+<div id="consonant-combos-container" class="combo-grid"></div>
+<h3 style="color:var(--secondary);margin-top:25px;">🔤 Vowel Secret Combos (Vowel Teams)</h3>
+<div id="vowel-combos-container" class="combo-grid"></div>
+<h3 style="margin-top:30px;">⭐ Common "Secret Sound" Rules for Kids</h3>
+<div id="rules-container"></div>
+</div>
+
+<!-- SIGHT WORDS -->
+<div id="sight-words" class="section">
+<h2>👁️ Sight Words</h2>
+<p>These are words we should know by heart! Tap a word to hear it, then mark it once you know it.</p>
+<div class="score-board">📖 Known Words: <span id="sight-progress">0</span> / <span id="sight-total">0</span></div>
+<div id="sight-words-container" class="combo-grid"></div>
+</div>
+
+<!-- GRAMMAR -->
+<div id="grammar" class="section">
+<h2>Nouns vs. Verbs Challenge</h2>
+<p>Is the word below a Noun (a person, place, or thing) or a Verb (an action word)?</p>
+<div class="score-board"><span id="grammar-grade-stars">🏆 Grade: New Quiz Started</span></div>
+<div class="grammar-box">
+<div id="grammar-word-display" class="grammar-word">Word</div>
+<div style="margin:20px 0;">
+<button id="btn-noun" class="choice-btn" onclick="selectGrammarType('noun')">Naming Word (Noun) 🧸</button>
+<button id="btn-verb" class="choice-btn" onclick="selectGrammarType('verb')">Action Word (Verb) 🏃</button>
+</div>
+<button class="print-btn" style="background-color:var(--dark);margin-bottom:0;" onclick="checkGrammarAnswer()">Verify My Answer</button>
+</div>
+<div id="grammar-feedback" class="feedback"></div>
+<div style="text-align:center;margin-top:20px;"><button id="next-grammar-btn" class="print-btn" style="background-color:var(--secondary);display:none;" onclick="nextGrammarExercise()">Next Exercise Word ➡️</button></div>
+</div>
+
+<!-- ================= SCHOOL GRADE 1 LANDING ================= -->
+<div id="school-grade1" class="section">
+<h2>🎓 School Grade 1 Curriculum</h2>
+<p>A complete learning journey across 5 units. Pick a unit to begin!</p>
+<div id="school-landing-grid" class="unit-grid"></div>
+</div>
+
+<!-- ===== UNIT 1 ===== -->
+<div id="unit1" class="section">
+<button class="print-btn no-print" style="background:var(--dark);" onclick="switchTab('school-grade1')">⬅ Back to Units</button>
+<h2>🏫 Unit 1: Welcome to School, Colors & My Identity</h2>
+<div class="sub-nav" data-unit="unit1">
+<button data-sub="11" class="active" onclick="switchSubTab('unit1','11')">1.1 Items & Shapes</button>
+<button data-sub="12" onclick="switchSubTab('unit1','12')">1.2 Colors</button>
+<button data-sub="13" onclick="switchSubTab('unit1','13')">1.3 My Identity</button>
+<button data-sub="14" onclick="switchSubTab('unit1','14')">1.4 Greetings</button>
+</div>
+
+<div class="sub-content" data-unit="unit1" id="sub-unit1-11" style="display:block;">
+<p>Tap items and shapes to hear them used in a sentence: "It is a ___."</p>
+<div id="u1-items-grid" class="unit-grid"></div>
+<h3 style="margin-top:25px;">Shapes</h3>
+<div id="u1-shapes-grid" class="unit-grid"></div>
+<button class="print-btn" onclick="startShapesQuiz()">Take the Shapes Quiz 📝</button>
+<div id="u1-shapes-quiz"></div>
+</div>
+
+<div class="sub-content" data-unit="unit1" id="sub-unit1-12" style="display:none;">
+<p>Tap a color to hear its name, then try the matching quiz below!</p>
+<div id="u1-colors-grid" class="unit-grid"></div>
+<button class="print-btn" onclick="startColorQuiz()">Take the Color Quiz 📝</button>
+<div id="u1-colors-quiz"></div>
+</div>
+
+<div class="sub-content" data-unit="unit1" id="sub-unit1-13" style="display:none;">
+<div class="grammar-box">
+<p>✍️ Write your name on the whiteboard:</p>
+<div class="whiteboard-wrap" id="wb-wrap-name" style="width:320px;height:150px;">
+<canvas id="wb-guide-name" width="320" height="150" class="wb-canvas wb-guide-canvas"></canvas>
+<canvas id="wb-draw-name" width="320" height="150" class="wb-canvas wb-draw-canvas"></canvas>
+</div>
+<div class="wb-controls"><button class="print-btn" style="background:#95a5a6;" onclick="clearWhiteboard('name')">🧹 Clear</button></div>
+
+<p style="margin-top:25px;">✍️ Trace the number that shows YOUR age:</p>
+<div style="display:flex;gap:18px;justify-content:center;flex-wrap:wrap;">
+<div class="age-pad-block" id="age-block-5">
+<div class="whiteboard-wrap" style="width:110px;height:110px;">
+<canvas id="wb-guide-age5" width="110" height="110" class="wb-canvas wb-guide-canvas"></canvas>
+<canvas id="wb-draw-age5" width="110" height="110" class="wb-canvas wb-draw-canvas"></canvas>
+</div>
+<button class="print-btn" style="background:var(--secondary);font-size:13px;padding:6px 12px;" onclick="checkAgeTrace(5)">Check 5</button>
+</div>
+<div class="age-pad-block" id="age-block-6">
+<div class="whiteboard-wrap" style="width:110px;height:110px;">
+<canvas id="wb-guide-age6" width="110" height="110" class="wb-canvas wb-guide-canvas"></canvas>
+<canvas id="wb-draw-age6" width="110" height="110" class="wb-canvas wb-draw-canvas"></canvas>
+</div>
+<button class="print-btn" style="background:var(--secondary);font-size:13px;padding:6px 12px;" onclick="checkAgeTrace(6)">Check 6</button>
+</div>
+<div class="age-pad-block" id="age-block-7">
+<div class="whiteboard-wrap" style="width:110px;height:110px;">
+<canvas id="wb-guide-age7" width="110" height="110" class="wb-canvas wb-guide-canvas"></canvas>
+<canvas id="wb-draw-age7" width="110" height="110" class="wb-canvas wb-draw-canvas"></canvas>
+</div>
+<button class="print-btn" style="background:var(--secondary);font-size:13px;padding:6px 12px;" onclick="checkAgeTrace(7)">Check 7</button>
+</div>
+</div>
+<p id="age-selected-display" style="font-weight:bold;margin-top:10px;">Age not selected yet</p>
+
+<p style="margin-top:25px;">✍️ Write the city or country where you live:</p>
+<div class="whiteboard-wrap" id="wb-wrap-city" style="width:320px;height:150px;">
+<canvas id="wb-guide-city" width="320" height="150" class="wb-canvas wb-guide-canvas"></canvas>
+<canvas id="wb-draw-city" width="320" height="150" class="wb-canvas wb-draw-canvas"></canvas>
+</div>
+<div class="wb-controls"><button class="print-btn" style="background:#95a5a6;" onclick="clearWhiteboard('city')">🧹 Clear</button></div>
+
+<p style="margin-top:25px;">👨‍👩‍👧‍👦 Tap the pictures of the people in your family:</p>
+<div id="id-family-select" class="unit-grid"></div>
+<p style="font-weight:bold;">There are <span id="id-family-count">1</span> people in my family (including me!).</p>
+
+<button class="print-btn" style="margin-top:15px;" onclick="saveProfile()">Save My Profile ✅</button>
+</div>
+<div id="profile-summary" class="feedback"></div>
+</div>
+
+<div class="sub-content" data-unit="unit1" id="sub-unit1-14" style="display:none;">
+<p>Tap a card to hear the greeting or command out loud!</p>
+<div id="u1-greetings-grid" class="unit-grid"></div>
+<button class="print-btn" onclick="startGreetingsQuiz()">Take the Greetings Quiz 📝</button>
+<div id="u1-greetings-quiz"></div>
+</div>
+</div>
+
+<!-- ===== UNIT 2 ===== -->
+<div id="unit2" class="section">
+<button class="print-btn no-print" style="background:var(--dark);" onclick="switchTab('school-grade1')">⬅ Back to Units</button>
+<h2>🗓️ Unit 2: Time, Days & Toy Numbers</h2>
+<div class="sub-nav" data-unit="unit2">
+<button data-sub="21" class="active" onclick="switchSubTab('unit2','21')">2.1 Calendar & Time</button>
+<button data-sub="22" onclick="switchSubTab('unit2','22')">2.2 Numbers 1–20</button>
+<button data-sub="23" onclick="switchSubTab('unit2','23')">2.3 Toy Box</button>
+</div>
+
+<div class="sub-content" data-unit="unit2" id="sub-unit2-21" style="display:block;">
+<h3>Put the Days in Order</h3>
+<p>Click the days from Monday to Sunday, in the correct order!</p>
+<div id="days-order-container"></div>
+<div id="days-feedback" class="feedback"></div>
+<button class="print-btn" style="background-color:var(--dark);" onclick="renderDaysOrder()">Shuffle Days Again 🔀</button>
+<h3 style="margin-top:25px;">Months of the Year</h3>
+<button class="print-btn" onclick="startMonthsQuiz()">Take the Months Quiz 📝</button>
+<div id="u2-months-quiz"></div>
+<h3 style="margin-top:25px;">Parts of the Day</h3>
+<div id="u2-parts-grid" class="unit-grid"></div>
+</div>
+
+<div class="sub-content" data-unit="unit2" id="sub-unit2-22" style="display:none;">
+<p>Tap a number to hear the digit and word together!</p>
+<div id="u2-numbers-grid" class="letters-grid"></div>
+<button class="print-btn" onclick="startNumbersQuiz()">Take the Numbers Quiz 📝</button>
+<div id="u2-numbers-quiz"></div>
+</div>
+
+<div class="sub-content" data-unit="unit2" id="sub-unit2-23" style="display:none;">
+<p>Toy box vocabulary — tap to hear each word!</p>
+<div id="u2-toys-grid" class="unit-grid"></div>
+<button class="print-btn" onclick="startToyCountQuiz()">Count the Toys Quiz 📝</button>
+<div id="u2-toys-quiz"></div>
+</div>
+</div>
+
+<!-- ===== UNIT 4 ===== -->
+<div id="unit4" class="section">
+<button class="print-btn no-print" style="background:var(--dark);" onclick="switchTab('school-grade1')">⬅ Back to Units</button>
+<h2>👨‍👩‍👧 Unit 4: People, Family & Basic Sentences</h2>
+<div class="sub-nav" data-unit="unit4">
+<button data-sub="41" class="active" onclick="switchSubTab('unit4','41')">4.1 School & Community</button>
+<button data-sub="42" onclick="switchSubTab('unit4','42')">4.2 Family Tree</button>
+<button data-sub="43" onclick="switchSubTab('unit4','43')">4.3 Sentence Building</button>
+</div>
+
+<div class="sub-content" data-unit="unit4" id="sub-unit4-41" style="display:block;">
+<div id="u4-community-grid" class="unit-grid"></div>
+<button class="print-btn" onclick="startHeSheQuiz()">Take the He/She & Reading Quiz 📝</button>
+<div id="u4-hesheq"></div>
+</div>
+
+<div class="sub-content" data-unit="unit4" id="sub-unit4-42" style="display:none;">
+<p>Tap each family member to learn their title. Visit everyone to complete this lesson!</p>
+<div id="family-tree-container" class="family-tree"></div>
+<div id="family-info" class="feedback"></div>
+</div>
+
+<div class="sub-content" data-unit="unit4" id="sub-unit4-43" style="display:none;">
+<h3>Capitalization Practice</h3>
+<p>Type the correct CAPITAL letter for the start of each sentence and for names!</p>
+<div id="u4-sentence-container"></div>
+<div id="u4-sentence-feedback" class="feedback"></div>
+</div>
+</div>
+
+<!-- ===== UNIT 5 ===== -->
+<div id="unit5" class="section">
+<button class="print-btn no-print" style="background:var(--dark);" onclick="switchTab('school-grade1')">⬅ Back to Units</button>
+<h2>🖐️ Unit 5: My Body Parts</h2>
+<p>Tap a body part to hear "This is my ___." (one) or "These are my ___." (many)!</p>
+<div id="u5-body-grid" class="unit-grid"></div>
+<div id="u5-sentence-display" style="text-align:center;font-size:24px;font-weight:bold;color:var(--secondary);margin-top:15px;"></div>
+<button class="print-btn" onclick="startBodyQuiz()">Take the This/These Quiz 📝</button>
+<div id="u5-quiz"></div>
+</div>
+
+<!-- ===== UNIT 7 ===== -->
+<div id="unit7" class="section">
+<button class="print-btn no-print" style="background:var(--dark);" onclick="switchTab('school-grade1')">⬅ Back to Units</button>
+<h2>🏠 Unit 7: My Home</h2>
+<p>Drag each object into the room where it belongs!</p>
+<p class="no-print" style="text-align:center;color:#666;font-size:14px;">Tap an object, then tap the room it belongs in!</p>
+<div id="u7-draggables" style="display:flex;gap:15px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;">
+<div class="draggable" id="obj-shower" onclick="selectHomeObject('obj-shower')">🚿 Shower</div>
+<div class="draggable" id="obj-bed" onclick="selectHomeObject('obj-bed')">🛏️ Bed</div>
+<div class="draggable" id="obj-tv" onclick="selectHomeObject('obj-tv')">📺 TV</div>
+<div class="draggable" id="obj-cupboard" onclick="selectHomeObject('obj-cupboard')">🗄️ Cupboard</div>
+</div>
+<div class="unit-grid">
+<div><h4 style="text-align:center;">Bathroom 🛁</h4><div class="drop-zone" data-room="bathroom" onclick="placeHomeObject('bathroom')">Tap here</div></div>
+<div><h4 style="text-align:center;">Bedroom 🛌</h4><div class="drop-zone" data-room="bedroom" onclick="placeHomeObject('bedroom')">Tap here</div></div>
+<div><h4 style="text-align:center;">Living Room 🛋️</h4><div class="drop-zone" data-room="livingroom" onclick="placeHomeObject('livingroom')">Tap here</div></div>
+<div><h4 style="text-align:center;">Kitchen 🍳</h4><div class="drop-zone" data-room="kitchen" onclick="placeHomeObject('kitchen')">Tap here</div></div>
+</div>
+<div id="u7-feedback" class="feedback"></div>
+</div>
+
+<!-- FINAL QUIZ -->
+<div id="quiz" class="section">
+<h2>🏆 Final Challenge Quiz</h2>
+<p>Test everything you've learned!</p>
+<div id="quiz-start-screen">
+<div class="grammar-box"><p style="font-size:18px;">Ready to test your skills with 10 mixed questions?</p>
+<button class="print-btn" style="background-color:var(--primary);" onclick="startQuiz()">Start Quiz 🚀</button></div>
+</div>
+<div id="quiz-play-screen" style="display:none;">
+<div class="quiz-progress-track"><div id="quiz-progress-fill" class="quiz-progress-fill"></div></div>
+<p id="quiz-progress-text" style="text-align:center;font-weight:bold;color:var(--dark);"></p>
+<div class="grammar-box"><div id="quiz-question-text" style="font-size:22px;font-weight:bold;margin-bottom:20px;"></div><div id="quiz-options"></div></div>
+<div id="quiz-feedback" class="feedback"></div>
+</div>
+<div id="quiz-results-screen" style="display:none;">
+<div class="certificate">
+<h1>🏆 Quiz Complete!</h1>
+<p style="font-size:20px;margin-bottom:5px;">Your Score:</p>
+<p id="quiz-final-score" style="font-size:36px;font-weight:bold;color:var(--secondary);margin:5px 0;"></p>
+<p id="quiz-final-grade" style="font-size:22px;"></p>
+<button class="print-btn" style="background-color:var(--dark);" onclick="startQuiz()">Try Again 🔄</button>
+<button class="print-btn" style="background-color:var(--primary);" onclick="switchTab('printables')">Get My Certificate 🎓</button>
+</div>
+</div>
+</div>
+
+<!-- PRINTABLES -->
+<div id="printables" class="section">
+<h2>Printable Practice Tutorials</h2>
+<p>Generate clean handwriting worksheets and a certificate for physical practice at home.</p>
+<button class="print-btn" onclick="prepareAndPrint('ws-letters')"><i data-lucide="printer"></i> Print Letter Line Worksheet</button>
+<button class="print-btn" onclick="prepareAndPrint('ws-words')" style="background-color:var(--secondary);"><i data-lucide="printer"></i> Print Word Blending Sheet</button>
+<div class="no-print" style="margin:20px 0;background:#f8f9fa;border-radius:15px;padding:15px;">
+<label style="font-weight:bold;">Child's Name for Certificate: </label>
+<input type="text" id="cert-name-input" placeholder="Enter name" class="text-input-field" oninput="document.getElementById('cert-name-display').innerText = this.value || '__________________'">
+</div>
+<button class="print-btn" onclick="prepareAndPrint('ws-certificate')" style="background-color:var(--primary);"><i data-lucide="printer"></i> Print Achievement Certificate</button>
+
+<div id="print-area-wrapper" class="no-print">
+<div id="ws-letters" class="worksheet-preview" style="display:none;">
+<h1 style="text-align:center;margin:0;">My Letter Tracing Lesson</h1>
+<p style="text-align:center;color:#555;">Name: ______________________  Date: ________</p><br>
+<h3>1. Trace the Big and Small Letters</h3>
+<div style="font-size:24px;letter-spacing:12px;border:1px dashed #ccc;padding:15px;margin-bottom:30px;line-height:2;">Aa Bb Cc Dd Ee Ff Gg Hh Ii Jj Kk Ll Mm Nn Oo Pp Qq Rr Ss Tt Uu Vv Ww Xx Yy Zz</div>
+<h3>2. Practice Writing Lines</h3>
+<div class="ws-line"></div><div class="ws-line"></div>
+</div>
+<div id="ws-words" class="worksheet-preview" style="display:none;">
+<h1 style="text-align:center;margin:0;">My 3-Letter Word Builder</h1>
+<p style="text-align:center;color:#555;">Name: ______________________  Date: ________</p><br>
+<h3>1. Read and copy the words:</h3>
+<p style="font-size:24px;margin:20px 0;">c + at = <strong>cat</strong>  ___________________________</p>
+<p style="font-size:24px;margin:20px 0;">b + ag = <strong>bag</strong>  ___________________________</p>
+<p style="font-size:24px;margin:20px 0;">p + in = <strong>pin</strong>  ___________________________</p><br>
+<h3>2. Circle the vowel sound:</h3>
+<p style="font-size:24px;letter-spacing:15px;text-align:center;">HAT  RED  PIG  BOX  SUN</p>
+</div>
+<div id="ws-certificate" class="worksheet-preview certificate" style="display:none;">
+<h1>Certificate of Achievement</h1>
+<p style="font-size:18px;">This certifies that</p>
+<p id="cert-name-display" style="font-size:28px;font-weight:bold;border-bottom:2px dashed #999;display:inline-block;padding:0 40px 5px;">__________________</p>
+<p style="font-size:18px;margin-top:20px;">has successfully completed the Grade 1 English Learning Adventure!</p>
+<p style="font-size:16px;color:#888;">Date: ________________</p>
+<p style="font-size:40px;">🏆⭐🎉</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+lucide.createIcons();
+
+function switchTab(tabId){
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+document.querySelectorAll('nav > .nav-link').forEach(b=>b.classList.remove('active'));
+document.getElementById(tabId).classList.add('active');
+const navBtn=document.querySelector(`.nav-link[data-tab="${tabId}"]`);
+if(navBtn) navBtn.classList.add('active');
+}
+function switchSubTab(unitKey, subId){
+document.querySelectorAll(`.sub-content[data-unit="${unitKey}"]`).forEach(el=>el.style.display='none');
+document.getElementById(`sub-${unitKey}-${subId}`).style.display='block';
+document.querySelectorAll(`.sub-nav[data-unit="${unitKey}"] button`).forEach(b=>b.classList.remove('active'));
+const btn=document.querySelector(`.sub-nav[data-unit="${unitKey}"] button[data-sub="${subId}"]`);
+if(btn) btn.classList.add('active');
+}
+
+let totalStars=0;
+function addStars(n){totalStars+=n;const el=document.getElementById('global-stars');if(el)el.innerText=totalStars;}
+
+function speakText(text,rate){
+if('speechSynthesis' in window){
+window.speechSynthesis.cancel();
+let u=new SpeechSynthesisUtterance(text);
+u.rate=rate||0.85;u.pitch=1.1;
+window.speechSynthesis.speak(u);
+}
+}
+function speakCombo(letters,phoneticSound,examplesText){
+let cleanExamples=examplesText.split(',').slice(0,2).join(' and ');
+speakText(`${letters.split('').join(' ')} makes the sound ${phoneticSound}. Like in: ${cleanExamples}`,0.85);
+}
+
+// ================= WHITEBOARD HANDWRITING ENGINE =================
+// Drawing uses Pointer Events (works with finger, stylus/Apple Pencil, and mouse).
+// "Checking" compares the child's ink against a faint guide letter drawn as a thick stroke path,
+// giving a coverage/accuracy score rather than true OCR (no handwriting-recognition service is used).
+function setupWhiteboardDrawing(drawCanvasId){
+const canvas=document.getElementById(drawCanvasId);
+if(!canvas) return;
+const ctx=canvas.getContext('2d');
+ctx.lineWidth=16;ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle='#2F3E46';
+let drawing=false;
+function posFromClient(clientX,clientY){
+const rect=canvas.getBoundingClientRect();
+const scaleX=canvas.width/rect.width, scaleY=canvas.height/rect.height;
+return {x:(clientX-rect.left)*scaleX, y:(clientY-rect.top)*scaleY};
+}
+function startStroke(clientX,clientY){
+drawing=true;
+const p=posFromClient(clientX,clientY);
+ctx.beginPath();ctx.moveTo(p.x,p.y);
+}
+function continueStroke(clientX,clientY){
+if(!drawing)return;
+const p=posFromClient(clientX,clientY);
+ctx.lineTo(p.x,p.y);ctx.stroke();
+}
+function endStroke(){drawing=false;}
+
+if(window.PointerEvent){
+// Pointer Events unify mouse, touch, and stylus/Apple Pencil input on modern tablet browsers.
+canvas.addEventListener('pointerdown',e=>{
+startStroke(e.clientX,e.clientY);
+try{canvas.setPointerCapture(e.pointerId);}catch(err){}
+e.preventDefault();
+},{passive:false});
+canvas.addEventListener('pointermove',e=>{continueStroke(e.clientX,e.clientY);e.preventDefault();},{passive:false});
+canvas.addEventListener('pointerup',endStroke);
+canvas.addEventListener('pointerleave',endStroke);
+canvas.addEventListener('pointercancel',endStroke);
+}else{
+// Fallback for tablet browsers/webviews without full Pointer Event support.
+canvas.addEventListener('touchstart',e=>{
+const t=e.touches[0];
+startStroke(t.clientX,t.clientY);
+e.preventDefault();
+},{passive:false});
+canvas.addEventListener('touchmove',e=>{
+const t=e.touches[0];
+continueStroke(t.clientX,t.clientY);
+e.preventDefault();
+},{passive:false});
+canvas.addEventListener('touchend',e=>{endStroke();e.preventDefault();},{passive:false});
+canvas.addEventListener('touchcancel',endStroke);
+canvas.addEventListener('mousedown',e=>{startStroke(e.clientX,e.clientY);});
+canvas.addEventListener('mousemove',e=>{continueStroke(e.clientX,e.clientY);});
+canvas.addEventListener('mouseup',endStroke);
+canvas.addEventListener('mouseleave',endStroke);
+}
+}
+function renderGuideLetter(guideCanvasId, text, fontSize){
+const canvas=document.getElementById(guideCanvasId);
+if(!canvas) return;
+const ctx=canvas.getContext('2d');
+ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.font=`bold ${fontSize||160}px Arial`;
+ctx.textAlign='center';ctx.textBaseline='middle';
+ctx.lineWidth=32;
+ctx.strokeStyle='rgba(180,180,180,0.55)';
+ctx.strokeText(text, canvas.width/2, canvas.height/2+6);
+ctx.fillStyle='rgba(190,190,190,0.35)';
+ctx.fillText(text, canvas.width/2, canvas.height/2+6);
+}
+function clearWhiteboard(id){
+const dc=document.getElementById('wb-draw-'+id);
+if(dc) dc.getContext('2d').clearRect(0,0,dc.width,dc.height);
+}
+function checkWhiteboard(id){
+const guideCanvas=document.getElementById('wb-guide-'+id);
+const drawCanvas=document.getElementById('wb-draw-'+id);
+const w=drawCanvas.width, h=drawCanvas.height;
+const guideData=guideCanvas.getContext('2d').getImageData(0,0,w,h).data;
+const drawData=drawCanvas.getContext('2d').getImageData(0,0,w,h).data;
+let guidePixels=0, inkPixels=0, overlapPixels=0;
+for(let i=3;i<guideData.length;i+=4){
+const guideOn=guideData[i]>15;
+const inkOn=drawData[i]>15;
+if(guideOn)guidePixels++;
+if(inkOn)inkPixels++;
+if(guideOn&&inkOn)overlapPixels++;
+}
+const coverage=guidePixels? overlapPixels/guidePixels : 0;
+const accuracy=inkPixels? overlapPixels/inkPixels : 0;
+const passed = inkPixels>50 && coverage>=0.28 && accuracy>=0.28;
+return {coverage,accuracy,passed,inkPixels};
+}
+
+// --- Reusable Vocab Grid Renderer (with speaker icon + bigger emoji/text) ---
+function renderVocabGrid(containerId, items, template){
+document.getElementById(containerId).innerHTML=items.map(it=>`<div class="vocab-card" onclick="speakText('${template.replace('{word}',it.w)}',0.8)"><i data-lucide="volume-2" class="speaker-icon" style="width:16px;height:16px;"></i><div class="vocab-emoji">${it.e}</div><div class="vocab-word">${it.w}</div></div>`).join('');
+lucide.createIcons();
+}
+
+// --- Reusable Mini Quiz Engine ---
+function runMiniQuiz(containerId, questions, onComplete){
+let idx=0,score=0;
+const container=document.getElementById(containerId);
+function renderQ(){
+if(idx>=questions.length){
+container.innerHTML=`<div class="feedback" style="color:var(--correct)">🎉 Quiz complete! Score: ${score}/${questions.length}</div>`;
+onComplete(score,questions.length);
+return;
+}
+const item=questions[idx];
+container.innerHTML=`<div style="font-size:20px;font-weight:bold;margin-bottom:15px;text-align:center;">${item.q}</div><div id="mq-options"></div><div id="mq-feedback" class="feedback"></div>`;
+document.getElementById('mq-options').innerHTML=item.options.map((opt,i)=>`<button class="quiz-option-btn" onclick="answerMiniQuiz(${i})">${opt}</button>`).join('');
+}
+window.answerMiniQuiz=function(i){
+const item=questions[idx];
+const buttons=document.querySelectorAll(`#${containerId} .quiz-option-btn`);
+buttons.forEach(b=>b.onclick=null);
+if(i===item.answer){
+buttons[i].classList.add('correct');
+document.getElementById('mq-feedback').innerHTML="🎉 Correct!";
+document.getElementById('mq-feedback').style.color='var(--correct)';
+score++;addStars(1);
+}else{
+buttons[i].classList.add('wrong');
+buttons[item.answer].classList.add('correct');
+document.getElementById('mq-feedback').innerHTML="❌ Try to remember!";
+document.getElementById('mq-feedback').style.color='var(--wrong)';
+}
+setTimeout(()=>{idx++;renderQ();},1200);
+};
+renderQ();
+}
+
+// ================= ALPHABET: WRITE THE OPPOSITE (WHITEBOARD) =================
+let hwQueue=[];let hwIndex=0;let hwScore=0;
+function initHandwritingMatchGame(){
+const letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+hwQueue=[...letters].sort(()=>Math.random()-0.5).map(l=>Math.random()<0.5?l:l.toLowerCase());
+hwIndex=0;hwScore=0;
+document.getElementById('hw-score').innerText=0;
+loadHandwritingLetter();
+}
+function loadHandwritingLetter(){
+if(hwIndex>=hwQueue.length){
+document.getElementById('hw-shown-letter').innerText='🎉';
+document.getElementById('hw-instruction').innerText='';
+document.getElementById('hw-feedback').innerHTML='🏆 You finished all 26 letters!';
+document.getElementById('hw-feedback').style.color='var(--correct)';
+return;
+}
+const shown=hwQueue[hwIndex];
+const target=(shown===shown.toUpperCase())?shown.toLowerCase():shown.toUpperCase();
+document.getElementById('hw-shown-letter').innerText=shown;
+document.getElementById('hw-instruction').innerHTML=`Write the opposite case of <strong>${shown}</strong> on the board!`;
+clearWhiteboard('hw');
+renderGuideLetter('wb-guide-hw',target,170);
+document.getElementById('hw-feedback').innerText='';
+}
+function checkHandwritingMatch(){
+const result=checkWhiteboard('hw');
+const feedback=document.getElementById('hw-feedback');
+if(result.passed){
+feedback.innerHTML='🎉 Great writing!';feedback.style.color='var(--correct)';
+hwScore++;addStars(1);
+document.getElementById('hw-score').innerText=hwScore;
+hwIndex++;
+setTimeout(loadHandwritingLetter,900);
+}else if(result.inkPixels<=50){
+feedback.innerHTML='✍️ Try writing on the board first!';feedback.style.color='#f39c12';
+}else{
+feedback.innerHTML='❌ Not quite — trace over the light gray letter!';feedback.style.color='var(--wrong)';
+}
+}
+
+// ================= ALPHABET: MATCH COLORS =================
+const alphaColorData="ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('').map((l,i)=>({cap:l,small:l.toLowerCase(),color:`hsl(${Math.round(i*360/26)},65%,82%)`}));
+let cmSelectedCap=null,cmSelectedSmall=null,cmScore=0;
+function initColorMatchGame(){
+cmScore=0;document.getElementById('cm-score').innerText=0;
+document.getElementById('cm-caps-container').innerHTML=alphaColorData.map(it=>`<div class="letter-card" data-letter="${it.cap}" style="background:${it.color};" onclick="selectCmCap(this)">${it.cap}</div>`).join('');
+const shuffled=[...alphaColorData].sort(()=>Math.random()-0.5);
+document.getElementById('cm-smalls-container').innerHTML=shuffled.map(it=>`<div class="letter-card" data-letter="${it.small}" data-color="${it.color}" style="background:#f1f2f6;" onclick="selectCmSmall(this)">${it.small}</div>`).join('');
+cmSelectedCap=null;cmSelectedSmall=null;
+document.getElementById('cm-feedback').innerText='';
+}
+function selectCmCap(el){
+if(el.classList.contains('correct'))return;
+document.querySelectorAll('#cm-caps-container .letter-card').forEach(c=>c.style.outline='');
+cmSelectedCap=el;el.style.outline='4px solid var(--dark)';
+checkCmMatch();
+}
+function selectCmSmall(el){
+if(el.classList.contains('correct'))return;
+document.querySelectorAll('#cm-smalls-container .letter-card').forEach(c=>c.style.outline='');
+cmSelectedSmall=el;el.style.outline='4px solid var(--dark)';
+checkCmMatch();
+}
+function checkCmMatch(){
+if(cmSelectedCap&&cmSelectedSmall){
+const capVal=cmSelectedCap.getAttribute('data-letter');
+const smallVal=cmSelectedSmall.getAttribute('data-letter');
+const feedback=document.getElementById('cm-feedback');
+if(capVal.toLowerCase()===smallVal){
+cmSelectedCap.style.outline='';cmSelectedCap.style.background='';
+cmSelectedSmall.style.outline='';cmSelectedSmall.style.background='';
+cmSelectedCap.classList.add('correct');cmSelectedSmall.classList.add('correct');
+cmScore++;addStars(1);document.getElementById('cm-score').innerText=cmScore;
+feedback.innerHTML='🎉 Colors matched!';feedback.style.color='var(--correct)';
+cmSelectedCap=null;cmSelectedSmall=null;
+}else{
+feedback.innerHTML='❌ Different colors — not a match!';feedback.style.color='var(--wrong)';
+cmSelectedSmall.style.outline='';cmSelectedSmall=null;
+}
+}
+}
+
+// ================= ALPHABET: LETTER SOUNDS =================
+const phonicsAlphabet=[
+{l:'A',sound:'a',word:'Apple',emoji:'🍎'},{l:'B',sound:'b',word:'Ball',emoji:'⚽'},
+{l:'C',sound:'k',word:'Cat',emoji:'🐱'},{l:'D',sound:'d',word:'Dog',emoji:'🐶'},
+{l:'E',sound:'e',word:'Egg',emoji:'🥚'},{l:'F',sound:'f',word:'Fish',emoji:'🐟'},
+{l:'G',sound:'g',word:'Goat',emoji:'🐐'},{l:'H',sound:'h',word:'Hat',emoji:'🎩'},
+{l:'I',sound:'i',word:'Ink',emoji:'🖋️'},{l:'J',sound:'j',word:'Jam',emoji:'🍯'},
+{l:'K',sound:'k',word:'Kite',emoji:'🪁'},{l:'L',sound:'l',word:'Lion',emoji:'🦁'},
+{l:'M',sound:'m',word:'Moon',emoji:'🌙'},{l:'N',sound:'n',word:'Nest',emoji:'🪺'},
+{l:'O',sound:'o',word:'Octopus',emoji:'🐙'},{l:'P',sound:'p',word:'Pig',emoji:'🐷'},
+{l:'Q',sound:'kw',word:'Queen',emoji:'👑'},{l:'R',sound:'r',word:'Rabbit',emoji:'🐰'},
+{l:'S',sound:'s',word:'Sun',emoji:'☀️'},{l:'T',sound:'t',word:'Tiger',emoji:'🐯'},
+{l:'U',sound:'u',word:'Umbrella',emoji:'☂️'},{l:'V',sound:'v',word:'Van',emoji:'🚐'},
+{l:'W',sound:'w',word:'Web',emoji:'🕸️'},{l:'X',sound:'ks',word:'Fox',emoji:'🦊'},
+{l:'Y',sound:'y',word:'Yo-yo',emoji:'🪀'},{l:'Z',sound:'z',word:'Zebra',emoji:'🦓'}
+];
+let heardLetters=new Set();
+function renderPhonicsAlphabet(){
+document.getElementById('phonics-alphabet-container').innerHTML=phonicsAlphabet.map(item=>`<div class="letter-card" data-letter="${item.l}" onclick="speakLetterSound('${item.l}','${item.sound}','${item.word}')"><span class="anchor-img">${item.emoji}</span><span>${item.l}${item.l.toLowerCase()}</span></div>`).join('');
+}
+function speakLetterSound(letter,sound,word){
+speakText(`${letter} says ${sound}. ${word}`,0.8);
+if(!heardLetters.has(letter)){
+heardLetters.add(letter);
+document.getElementById('phonics-progress').innerText=heardLetters.size;
+addStars(1);
+const card=document.querySelector(`#phonics-alphabet-container .letter-card[data-letter="${letter}"]`);
+if(card)card.style.borderColor='var(--correct)';
+}
+}
+
+// ================= ALPHABET: FIND THE LETTER =================
+const findWords=[{word:'APPLE',target:'A'},{word:'BANANA',target:'B'},{word:'KITTEN',target:'T'},{word:'ZEBRA',target:'Z'},{word:'FROG',target:'R'},{word:'SUNNY',target:'N'},{word:'CLOCK',target:'C'},{word:'DUCK',target:'K'}];
+let currentFindIndex=0;
+function loadFindWord(){
+const item=findWords[currentFindIndex];
+document.getElementById('find-instruction').innerHTML=`Find the target letter <strong>${item.target}</strong> in the word below:`;
+document.getElementById('word-display').innerHTML=item.word.split('').map(letter=>`<span class="letter-span" onclick="checkTargetLetter(this,'${letter}','${item.target}')">${letter}</span>`).join('');
+document.getElementById('find-feedback').innerText='';
+}
+function checkTargetLetter(element,letter,target){
+const feedback=document.getElementById('find-feedback');
+if(letter===target){element.classList.add('found');feedback.innerHTML="🌟 Spectacular! You found the letter!";feedback.style.color='var(--correct)';addStars(1);}
+else{feedback.innerHTML="🔍 Not quite, scan closely.";feedback.style.color='#f39c12';}
+}
+function nextFindWord(){currentFindIndex=(currentFindIndex+1)%findWords.length;loadFindWord();}
+
+// ================= WORD FAMILIES =================
+const wordFamilyData={"abc":["cab","dab","grab","slab"],"ack":["back","black","crack","snack","track"],"ad":["bad","dad","had","glad"],"ag":["bag","tag","flag","drag"],"ail":["mail","sail","tail","snail"],"ain":["rain","train","chain","brain"],"ake":["bake","cake","lake","snake"],"ale":["sale","tale","whale"],"all":["ball","call","fall","wall","small"],"am":["ham","jam","ram","slam"],"an":["an","can","fan","man","pan","ran","tan","van"],"ank":["bank","tank","thank","prank"],"ap":["cap","map","nap","tap","clap"],"ash":["hash","cash","flash","splash"],"at":["at","bat","cat","fat","hat","mat","pat","rat","sat"],"ate":["gate","late","plate","skate"],"aw":["saw","claw","straw","draw"],"ay":["day","play","stay","tray"],"eat":["eat","meat","seat","treat"],"ed":["bed","red","sled","shred"],"eep":["keep","deep","sheep","sleep"],"ell":["bell","tell","well","smell"],"en":["hen","pen","ten","then"],"est":["best","nest","test","chest"],"et":["bet","get","jet","net","pet","wet"],"ice":["ice","nice","mice","slice"],"ick":["kick","pick","stick","trick"],"ide":["hide","ride","side","slide"],"ight":["light","night","bright","flight"],"ill":["hill","fill","mill","still"],"in":["bin","fin","pin","win","chin","spin"],"ine":["fine","line","mine","shine"],"ing":["sing","ring","king","bring"],"ink":["ink","pink","sink","drink"],"ip":["dip","lip","ship","flip"],"it":["bit","fit","hit","sit","split"],"ock":["rock","sock","clock","block"],"og":["dog","fog","log","frog"],"oke":["joke","poke","smoke","broke"],"op":["hop","mop","top","stop"],"ore":["more","store","shore","before"],"ot":["hot","pot","not","spot"],"ow":["cow","how","now","brow"],"uck":["duck","luck","truck","stuck"],"ug":["bug","hug","mug","plug"],"ump":["jump","bump","lump","stump"],"un":["bun","fun","run","sun"],"unk":["trunk","skunk","chunk"],"ut":["cut","hut","nut","shut"]};
+let selectedFamily='at';let familyWordIndex=0;
+function buildFamilyMenu(){
+document.getElementById('family-selectors').innerHTML=Object.keys(wordFamilyData).map(f=>`<button class="family-badge-btn ${f===selectedFamily?'active':''}" onclick="selectWordFamily('${f}')">-${f}</button>`).join('');
+}
+function selectWordFamily(familyKey){
+selectedFamily=familyKey;familyWordIndex=0;
+document.querySelectorAll('.family-badge-btn').forEach(btn=>btn.classList.remove('active'));
+const btn=document.querySelector(`.family-badge-btn[onclick="selectWordFamily('${familyKey}')"]`);
+if(btn)btn.classList.add('active');
+document.getElementById('family-suffix').innerText=familyKey;
+updateWordDisplay();
+}
+function updateWordDisplay(){
+const currentWords=wordFamilyData[selectedFamily];
+const activeFullWord=currentWords[familyWordIndex];
+let rootPrefix=activeFullWord===selectedFamily?"":activeFullWord.substring(0,activeFullWord.length-selectedFamily.length);
+document.getElementById('family-prefix').innerText=rootPrefix||"•";
+document.getElementById('family-result').innerText=activeFullWord;
+}
+function nextFamilyWord(){const currentWords=wordFamilyData[selectedFamily];familyWordIndex=(familyWordIndex+1)%currentWords.length;updateWordDisplay();}
+function speakFamilyWord(){speakText(document.getElementById('family-result').innerText,0.8);}
+
+// ================= SOUND COMBOS =================
+const consonantCombos=[{c:'ch',s:'ch',e:'chair, cheese, chick, lunch'},{c:'sh',s:'sh',e:'ship, shoe, fish, shop'},{c:'th',s:'th',e:'thumb, three, bath, this'},{c:'ph',s:'f',e:'phone, photo, graph, elephant'},{c:'wh',s:'w',e:'wheel, whale, when, white'},{c:'ck',s:'k',e:'duck, clock, back, rock'},{c:'ng',s:'ng',e:'ring, sing, king, long'},{c:'nk',s:'nk',e:'pink, sink, trunk, bank'},{c:'qu',s:'kw',e:'queen, quick, quilt, quiz'},{c:'wr',s:'r',e:'write, wrist, wrap, wrong'},{c:'kn',s:'n',e:'knee, knife, know, knot'},{c:'gn',s:'n',e:'gnome, sign, gnaw'},{c:'mb',s:'m',e:'lamb, thumb, comb, climb'},{c:'tch',s:'ch',e:'match, catch, kitchen, watch'},{c:'dge',s:'j',e:'badge, bridge, edge, judge'}];
+const vowelCombos=[{c:'ai',s:'long a',e:'rain, train, paint'},{c:'ay',s:'long a',e:'day, play, stay'},{c:'ee',s:'long e',e:'tree, green, sleep'},{c:'ea',s:'long e',e:'beach, read, clean'},{c:'oa',s:'long o',e:'boat, coat, road'},{c:'oe',s:'long o',e:'toe, hoe'},{c:'oo',s:'oo',e:'moon, book, food'},{c:'ou',s:'ow',e:'cloud, house, round'},{c:'ow',s:'ow',e:'cow, snow, grow'},{c:'oi',s:'oi',e:'coin, boil, point'},{c:'oy',s:'oi',e:'boy, toy, enjoy'},{c:'au',s:'aw',e:'autumn, haul'},{c:'aw',s:'aw',e:'saw, paw, draw'},{c:'ew',s:'oo',e:'new, few, grew'}];
+const rulesData=[{name:'👂 CH',rule:'Two letters, one sound.',words:'chair, chicken, lunch'},{name:'👂 SH',rule:'"Quiet sound": shhh!',words:'ship, shop, fish'},{name:'👂 PH',rule:'"Fancy F sound"',words:'phone, photo, graph'},{name:'👂 TH',rule:'Two sounds: Soft (this, that) & Strong (three, thumb)',words:'this, three, thumb'},{name:'👂 WH',rule:'Question words often use wh.',words:'what, when, where'}];
+function renderPhonicsGrid(){
+document.getElementById('consonant-combos-container').innerHTML=consonantCombos.map(item=>`<div class="combo-learn-card" onclick="speakCombo('${item.c}','${item.s}','${item.e}')"><i data-lucide="volume-2" class="speaker-icon" style="width:16px;height:16px;"></i><div class="main-combo">${item.c}</div><div class="sound-tag">Sound: ${item.s}</div><div class="examples-list">${item.e}</div></div>`).join('');
+document.getElementById('vowel-combos-container').innerHTML=vowelCombos.map(item=>`<div class="combo-learn-card" onclick="speakCombo('${item.c}','${item.s}','${item.e}')"><i data-lucide="volume-2" class="speaker-icon" style="width:16px;height:16px;"></i><div class="main-combo">${item.c}</div><div class="sound-tag">${item.s}</div><div class="examples-list">${item.e}</div></div>`).join('');
+document.getElementById('rules-container').innerHTML=rulesData.map(r=>`<div class="rule-card"><strong>${r.name}</strong> — ${r.rule}<br><span style="color:#555;font-size:14px;">Examples: ${r.words}</span></div>`).join('');
+lucide.createIcons();
+}
+
+// ================= SIGHT WORDS =================
+const sightWords=['the','and','a','to','said','you','is','it','was','for','are','with','they','at','this','have','one','he','she','we','my','like','see','go'];
+let knownWordsSet=new Set();
+function renderSightWords(){
+document.getElementById('sight-total').innerText=sightWords.length;
+document.getElementById('sight-words-container').innerHTML=sightWords.map((w,i)=>`<div class="combo-learn-card" id="sw-${i}"><i data-lucide="volume-2" class="speaker-icon" style="width:16px;height:16px;" onclick="speakText('${w}',0.8)"></i><div class="main-combo" style="cursor:pointer;" onclick="speakText('${w}',0.8)">${w}</div><button class="print-btn" style="background:var(--secondary);font-size:13px;padding:6px 14px;margin-top:8px;margin-bottom:0;" onclick="markSightWordKnown(${i},'${w}')">I know it! ✅</button></div>`).join('');
+lucide.createIcons();
+}
+function markSightWordKnown(i,word){
+const card=document.getElementById('sw-'+i);
+if(!knownWordsSet.has(word)){knownWordsSet.add(word);addStars(1);}
+card.style.borderColor='var(--correct)';card.style.background='#eafff1';
+document.getElementById('sight-progress').innerText=knownWordsSet.size;
+}
+
+// ================= GRAMMAR (NOUN/VERB) =================
+const grammarExercises=[{word:'Bicycle 🚲',type:'noun'},{word:'Run 🏃',type:'verb'},{word:'Teacher 👩‍🏫',type:'noun'},{word:'Swim 🏊',type:'verb'},{word:'Apple 🍎',type:'noun'},{word:'Fly 🦅',type:'verb'}];
+let currentGrammarIndex=0;let selectedGrammarType=null;let grammarScore=0;
+function loadGrammarExercise(){
+selectedGrammarType=null;
+document.getElementById('btn-noun').className="choice-btn";
+document.getElementById('btn-verb').className="choice-btn";
+document.getElementById('grammar-feedback').innerText="";
+document.getElementById('next-grammar-btn').style.display="none";
+document.getElementById('grammar-word-display').innerText=grammarExercises[currentGrammarIndex].word;
+}
+function selectGrammarType(type){
+selectedGrammarType=type;
+document.getElementById('btn-noun').className=type==='noun'?"choice-btn selected-noun":"choice-btn";
+document.getElementById('btn-verb').className=type==='verb'?"choice-btn selected-verb":"choice-btn";
+}
+function checkGrammarAnswer(){
+if(!selectedGrammarType){document.getElementById('grammar-feedback').innerText="⚠️ Please pick a button first!";return;}
+const correctType=grammarExercises[currentGrammarIndex].type;
+const feedback=document.getElementById('grammar-feedback');
+if(selectedGrammarType===correctType){
+feedback.innerHTML="🎯 Excellent! Correct categorization.";feedback.style.color="var(--correct)";
+grammarScore++;addStars(1);
+}else{feedback.innerHTML=`❌ Oops! It's actually a ${correctType}.`;feedback.style.color="var(--wrong)";}
+document.getElementById('grammar-grade-stars').innerHTML=`🏆 Progress Grade: ${"⭐".repeat(grammarScore)} (${grammarScore} Points)`;
+document.getElementById('next-grammar-btn').style.display="inline-block";
+}
+function nextGrammarExercise(){currentGrammarIndex=(currentGrammarIndex+1)%grammarExercises.length;loadGrammarExercise();}
+
+// ================= SCHOOL GRADE 1: PROGRESS STATE =================
+// Progress is tracked in-memory for this session only (no browser storage is used here).
+let progress={unit1:new Set(),unit2:new Set(),unit4:new Set(),unit5:new Set(),unit7:new Set()};
+const unitMeta={
+unit1:{title:'Unit 1: Welcome to School, Colors & My Identity',icon:'🏫',subs:['11','12','13','14']},
+unit2:{title:'Unit 2: Time, Days & Toy Numbers',icon:'🗓️',subs:['21','22','23']},
+unit4:{title:'Unit 4: People, Family & Basic Sentences',icon:'👨‍👩‍👧',subs:['41','42','43']},
+unit5:{title:'Unit 5: My Body Parts',icon:'🖐️',subs:['51']},
+unit7:{title:'Unit 7: My Home',icon:'🏠',subs:['71']}
+};
+function renderSchoolLanding(){
+document.getElementById('school-landing-grid').innerHTML=Object.keys(unitMeta).map(key=>{
+const m=unitMeta[key];
+return `<div class="unit-card" onclick="openUnit('${key}')"><h3>${m.icon} ${m.title}</h3><div class="unit-progress-track"><div class="unit-progress-fill" id="progress-fill-${key}"></div></div><p id="progress-label-${key}" style="font-size:14px;color:#666;">0/${m.subs.length} lessons complete</p><button class="print-btn" style="margin-top:10px;margin-bottom:0;">Enter Unit ➡️</button></div>`;
+}).join('');
+Object.keys(unitMeta).forEach(updateUnitProgressUI);
+}
+function updateUnitProgressUI(unitKey){
+const total=unitMeta[unitKey].subs.length;
+const done=progress[unitKey].size;
+const fill=document.getElementById(`progress-fill-${unitKey}`);
+if(fill)fill.style.width=`${(done/total)*100}%`;
+const label=document.getElementById(`progress-label-${unitKey}`);
+if(label)label.innerText=`${done}/${total} lessons complete`;
+}
+function completeSub(unitKey,subKey){
+if(!progress[unitKey].has(subKey)){progress[unitKey].add(subKey);addStars(3);}
+updateUnitProgressUI(unitKey);
+}
+function openUnit(key){
+switchTab(key);
+const schoolNav=document.querySelector('.nav-link[data-tab="school-grade1"]');
+if(schoolNav)schoolNav.classList.add('active');
+switchSubTab(key,unitMeta[key].subs[0]);
+}
+
+// ---------- UNIT 1 ----------
+const schoolItems=[{w:'pencil',e:'✏️'},{w:'pen',e:'🖊️'},{w:'eraser',e:'🧼'},{w:'ruler',e:'📏'},{w:'book',e:'📖'},{w:'bag',e:'🎒'},{w:'desk',e:'🪑'},{w:'chair',e:'💺'}];
+const shapesData=[{w:'circle',e:'🔵'},{w:'square',e:'🟦'},{w:'triangle',e:'🔺'},{w:'rectangle',e:'🟪'}];
+function renderUnit1_1(){
+renderVocabGrid('u1-items-grid',schoolItems,'It is a {word}.');
+document.getElementById('u1-shapes-grid').innerHTML=shapesData.map(s=>`<div class="vocab-card" onclick="speakText('What is it? It is a ${s.w}.',0.8)"><i data-lucide="volume-2" class="speaker-icon" style="width:16px;height:16px;"></i><div class="vocab-emoji">${s.e}</div><div class="vocab-word">${s.w}</div></div>`).join('');
+lucide.createIcons();
+}
+function startShapesQuiz(){
+const qs=shapesData.map(s=>{
+let opts=[...shapesData.map(x=>x.w)].sort(()=>Math.random()-0.5);
+return{q:`What shape is this? ${s.e}`,options:opts,answer:opts.indexOf(s.w)};
+}).sort(()=>Math.random()-0.5);
+runMiniQuiz('u1-shapes-quiz',qs,(score,total)=>{if(score>=total*0.5)completeSub('unit1','11');});
+}
+
+const colorsData=[{w:'white',c:'#ffffff'},{w:'black',c:'#2F3E46'},{w:'pink',c:'#ffb6c1'},{w:'orange',c:'#ffa500'},{w:'green',c:'#2ecc71'},{w:'blue',c:'#4ECDC4'},{w:'red',c:'#FF6B6B'},{w:'brown',c:'#8B5E3C'},{w:'yellow',c:'#FFE66D'},{w:'purple',c:'#9b59b6'}];
+const colorObjects=[{e:'🍎',color:'red'},{e:'🍌',color:'yellow'},{e:'🍇',color:'purple'},{e:'🐸',color:'green'},{e:'🐻',color:'brown'},{e:'🎃',color:'orange'}];
+function renderUnit1_2(){
+document.getElementById('u1-colors-grid').innerHTML=colorsData.map(c=>`<div class="color-swatch-card" onclick="speakText('This is ${c.w}.',0.8)"><div class="color-swatch" style="background:${c.c};"></div><div class="vocab-word">${c.w}</div></div>`).join('');
+}
+function startColorQuiz(){
+const qs=colorObjects.map(o=>{
+let opts=[o.color];
+while(opts.length<4){const r=colorsData[Math.floor(Math.random()*colorsData.length)].w;if(!opts.includes(r))opts.push(r);}
+opts.sort(()=>Math.random()-0.5);
+return{q:`What color is this? ${o.e}`,options:opts,answer:opts.indexOf(o.color)};
+}).sort(()=>Math.random()-0.5);
+runMiniQuiz('u1-colors-quiz',qs,(score,total)=>{if(score>=total*0.5)completeSub('unit1','12');});
+}
+
+// --- Identity (Whiteboard name/city, traced age, picture-select family) ---
+let ageSelected=null;
+let idFamilySelected=new Set();
+const idFamilyOptions=[{id:'dad',label:'Dad',e:'👨'},{id:'mum',label:'Mum',e:'👩'},{id:'grandpa',label:'Grandpa',e:'👴'},{id:'grandma',label:'Grandma',e:'👵'},{id:'sister',label:'Sister',e:'👧'},{id:'brother',label:'Brother',e:'👦'},{id:'uncle',label:'Uncle',e:'🧔'},{id:'aunt',label:'Aunt',e:'👩\u200d🦰'},{id:'cousin',label:'Cousin',e:'🧑'},{id:'baby',label:'Baby',e:'👶'}];
+function renderIdFamilySelect(){
+document.getElementById('id-family-select').innerHTML=idFamilyOptions.map(f=>`<div class="vocab-card" id="idfam-${f.id}" onclick="toggleFamilyMember('${f.id}')"><div class="vocab-emoji">${f.e}</div><div class="vocab-word">${f.label}</div></div>`).join('');
+}
+function toggleFamilyMember(id){
+const card=document.getElementById('idfam-'+id);
+if(idFamilySelected.has(id)){idFamilySelected.delete(id);card.style.background='';card.style.borderColor='';}
+else{idFamilySelected.add(id);card.style.background='#eafff1';card.style.borderColor='var(--correct)';}
+document.getElementById('id-family-count').innerText=idFamilySelected.size+1;
+}
+function checkAgeTrace(n){
+const result=checkWhiteboard('age'+n);
+const displayEl=document.getElementById('age-selected-display');
+if(result.passed){
+ageSelected=n;
+document.querySelectorAll('.age-pad-block').forEach(b=>b.style.outline='');
+document.getElementById('age-block-'+n).style.outline='4px solid var(--correct)';
+displayEl.innerHTML=`🎉 Age selected: <strong>${n}</strong>`;
+displayEl.style.color='var(--correct)';
+addStars(2);
+}else if(result.inkPixels<=30){
+displayEl.innerHTML='✍️ Trace the number first!';displayEl.style.color='#f39c12';
+}else{
+displayEl.innerHTML='❌ Try tracing more carefully over the number.';displayEl.style.color='var(--wrong)';
+}
+}
+function saveProfile(){
+const age=ageSelected||'—';
+const familyNames=[...idFamilySelected].map(id=>idFamilyOptions.find(f=>f.id===id).label);
+const familyText=familyNames.length?familyNames.join(', ')+' and me':'just me';
+const nameImg=document.getElementById('wb-draw-name').toDataURL();
+const cityImg=document.getElementById('wb-draw-city').toDataURL();
+document.getElementById('profile-summary').innerHTML=`
+<div style="text-align:center;">
+<p>📋 My name (written above):</p><img src="${nameImg}" style="border:2px solid #ccc;border-radius:10px;max-width:280px;background:white;">
+<p style="margin-top:15px;">I am <strong>${age}</strong> years old.</p>
+<p>I live in (written above):</p><img src="${cityImg}" style="border:2px solid #ccc;border-radius:10px;max-width:280px;background:white;">
+<p style="margin-top:10px;">There are <strong>${idFamilySelected.size+1}</strong> people in my family: ${familyText}.</p>
+</div>`;
+document.getElementById('profile-summary').style.color='var(--dark)';
+speakText(`I am ${ageSelected||'seven'} years old. There are ${idFamilySelected.size+1} people in my family.`,0.9);
+completeSub('unit1','13');
+}
+
+const greetingsData=[{w:'Hello',e:'👋'},{w:'Goodbye',e:'👋😢'},{w:'Good Morning',e:'🌅'},{w:'Thank you',e:'🙏'},{w:'Sit down',e:'🪑'},{w:'Stand up',e:'🧍'}];
+function renderUnit1_4(){renderVocabGrid('u1-greetings-grid',greetingsData,'{word}');}
+function startGreetingsQuiz(){
+const qs=greetingsData.map(g=>{
+let opts=[...greetingsData.map(x=>x.w)].sort(()=>Math.random()-0.5);
+return{q:`What do you say? ${g.e}`,options:opts,answer:opts.indexOf(g.w)};
+}).sort(()=>Math.random()-0.5);
+runMiniQuiz('u1-greetings-quiz',qs,(score,total)=>{if(score>=total*0.5)completeSub('unit1','14');});
+}
+
+// ---------- UNIT 2 ----------
+const days=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+let daysShuffled=[];let dayExpectedIndex=0;
+function renderDaysOrder(){
+daysShuffled=[...days].sort(()=>Math.random()-0.5);
+dayExpectedIndex=0;
+document.getElementById('days-order-container').innerHTML=daysShuffled.map(d=>`<button class="quiz-option-btn" style="display:inline-block;width:auto;" onclick="clickDay('${d}',this)">${d}</button>`).join('');
+document.getElementById('days-feedback').innerText='';
+}
+function clickDay(d,el){
+const feedback=document.getElementById('days-feedback');
+if(d===days[dayExpectedIndex]){
+el.classList.add('correct');el.onclick=null;dayExpectedIndex++;
+feedback.innerHTML=`✅ ${d} is correct!`;feedback.style.color='var(--correct)';addStars(1);
+if(dayExpectedIndex===7){feedback.innerHTML='🎉 All days in order!';completeSub('unit2','21');}
+}else{
+el.classList.add('wrong');setTimeout(()=>el.classList.remove('wrong'),600);
+feedback.innerHTML='❌ Not next! Think about the order.';feedback.style.color='var(--wrong)';
+}
+}
+const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+function startMonthsQuiz(){
+let qs=[];
+for(let i=0;i<5;i++){
+const idx=Math.floor(Math.random()*11);
+let options=[months[idx+1]];
+while(options.length<4){const r=months[Math.floor(Math.random()*12)];if(!options.includes(r))options.push(r);}
+options.sort(()=>Math.random()-0.5);
+qs.push({q:`Which month comes after ${months[idx]}?`,options,answer:options.indexOf(months[idx+1])});
+}
+runMiniQuiz('u2-months-quiz',qs,(s,t)=>{if(s>=t*0.6)addStars(2);});
+}
+const partsOfDay=[{w:'Morning',e:'🌅'},{w:'Afternoon',e:'☀️'},{w:'Evening',e:'🌇'},{w:'Night',e:'🌙'}];
+function renderPartsOfDay(){renderVocabGrid('u2-parts-grid',partsOfDay,'{word}');}
+
+const numbersData=[{d:1,w:'one'},{d:2,w:'two'},{d:3,w:'three'},{d:4,w:'four'},{d:5,w:'five'},{d:6,w:'six'},{d:7,w:'seven'},{d:8,w:'eight'},{d:9,w:'nine'},{d:10,w:'ten'},{d:11,w:'eleven'},{d:12,w:'twelve'},{d:13,w:'thirteen'},{d:14,w:'fourteen'},{d:15,w:'fifteen'},{d:16,w:'sixteen'},{d:17,w:'seventeen'},{d:18,w:'eighteen'},{d:19,w:'nineteen'},{d:20,w:'twenty'}];
+function renderNumberGrid(){
+document.getElementById('u2-numbers-grid').innerHTML=numbersData.map(n=>`<div class="letter-card" onclick="speakText('${n.d}, ${n.w}',0.8)"><span style="font-size:26px;">${n.d}</span><span style="font-size:13px;">${n.w}</span></div>`).join('');
+}
+function startNumbersQuiz(){
+let qs=[];
+for(let i=0;i<8;i++){
+const item=numbersData[Math.floor(Math.random()*20)];
+if(Math.random()<0.5){
+let options=[item.w];
+while(options.length<4){const r=numbersData[Math.floor(Math.random()*20)].w;if(!options.includes(r))options.push(r);}
+options.sort(()=>Math.random()-0.5);
+qs.push({q:`What word matches the number ${item.d}?`,options,answer:options.indexOf(item.w)});
+}else{
+let options=[String(item.d)];
+while(options.length<4){const r=String(numbersData[Math.floor(Math.random()*20)].d);if(!options.includes(r))options.push(r);}
+options.sort(()=>Math.random()-0.5);
+qs.push({q:`Which number is "${item.w}"?`,options,answer:options.indexOf(String(item.d))});
+}
+}
+runMiniQuiz('u2-numbers-quiz',qs,(s,t)=>{if(s>=t*0.6)completeSub('unit2','22');});
+}
+
+const toys=[{w:'ball',e:'⚽'},{w:'doll',e:'🪆'},{w:'bat',e:'🏏'},{w:'teddy',e:'🧸'},{w:'kite',e:'🪁'},{w:'car',e:'🚗'},{w:'train',e:'🚂'},{w:'robot',e:'🤖'},{w:'game',e:'🎮'}];
+function renderToys(){renderVocabGrid('u2-toys-grid',toys,'{word}');}
+function startToyCountQuiz(){
+let qs=[];
+for(let i=0;i<5;i++){
+const toy=toys[Math.floor(Math.random()*toys.length)];
+const count=Math.floor(Math.random()*8)+1;
+const item=numbersData[count-1];
+let options=[item.w];
+while(options.length<4){const r=numbersData[Math.floor(Math.random()*10)].w;if(!options.includes(r))options.push(r);}
+options.sort(()=>Math.random()-0.5);
+qs.push({q:`${toy.e.repeat(count)}<br>How many ${toy.w}s?`,options,answer:options.indexOf(item.w)});
+}
+runMiniQuiz('u2-toys-quiz',qs,(s,t)=>{if(s>=t*0.6)completeSub('unit2','23');});
+}
+
+// ---------- UNIT 4 ----------
+const communityVocab=[{w:'man',e:'👨'},{w:'woman',e:'👩'},{w:'girl',e:'👧'},{w:'boy',e:'👦'},{w:'teacher',e:'🧑‍🏫'},{w:'student',e:'🧑‍🎓'},{w:'friend',e:'🧑‍🤝‍🧑'},{w:'classmate',e:'👫'}];
+function renderCommunityVocab(){renderVocabGrid('u4-community-grid',communityVocab,'{word}');}
+function startHeSheQuiz(){
+const heShe=[{e:'👦',w:'He'},{e:'👨',w:'He'},{e:'👧',w:'She'},{e:'👩',w:'She'}];
+const reading=[{s:'He is a boy.',answer:'He'},{s:'She is a teacher.',answer:'She'}];
+let qs=heShe.map(h=>({q:`He or She? ${h.e}`,options:['He','She'],answer:h.w==='He'?0:1}));
+qs=qs.concat(reading.map(r=>({q:`"${r.s}" — Who is it about?`,options:['He','She'],answer:r.answer==='He'?0:1})));
+qs=qs.sort(()=>Math.random()-0.5);
+runMiniQuiz('u4-hesheq',qs,(s,t)=>{if(s>=t*0.6)completeSub('unit4','41');});
+}
+
+const familyData=[
+{row:1,id:'grandpa',label:'Grandpa',e:'👴',rel:'my grandpa'},{row:1,id:'grandma',label:'Grandma',e:'👵',rel:'my grandma'},
+{row:2,id:'dad',label:'Dad',e:'👨',rel:'my dad'},{row:2,id:'mum',label:'Mum',e:'👩',rel:'my mum'},{row:2,id:'uncle',label:'Uncle',e:'🧔',rel:'my uncle'},{row:2,id:'aunt',label:'Aunt',e:'👩‍🦰',rel:'my aunt'},
+{row:3,id:'me',label:'Me',e:'🧒',rel:'me',isMe:true},{row:3,id:'sister',label:'Sister',e:'👧',rel:'my sister'},{row:3,id:'brother',label:'Brother',e:'👦',rel:'my brother'},{row:3,id:'cousin',label:'Cousin',e:'🧑',rel:'my cousin'},
+{row:4,id:'baby',label:'Baby',e:'👶',rel:'my baby'}
+];
+let familyVisited=new Set();
+function renderFamilyTree(){
+const rows=[1,2,3,4];
+document.getElementById('family-tree-container').innerHTML=rows.map(r=>{
+const members=familyData.filter(m=>m.row===r);
+return `<div class="tree-row">${members.map(m=>`<div class="tree-node ${m.isMe?'me':''}" id="fam-${m.id}" onclick="visitFamilyMember('${m.id}','${m.label}','${m.rel}')"><div style="font-size:32px;">${m.e}</div><div>${m.label}</div></div>`).join('')}</div>`;
+}).join('');
+}
+function visitFamilyMember(id,label,rel){
+speakText(`This is ${rel}.`,0.8);
+document.getElementById('family-info').innerHTML=`This is <strong>${rel}</strong>.`;
+document.getElementById('family-info').style.color='var(--secondary)';
+if(!familyVisited.has(id)){familyVisited.add(id);addStars(1);}
+const node=document.getElementById('fam-'+id);
+if(node)node.classList.add('visited');
+if(familyVisited.size===familyData.length)completeSub('unit4','42');
+}
+
+const sentenceData=[
+{words:['i','have','got','a','mum','.'],capIndexes:[0]},
+{words:['her','name','is','layla','.'],capIndexes:[0,3]}
+];
+function renderSentenceBuilder(){
+document.getElementById('u4-sentence-container').innerHTML=sentenceData.map((sent)=>{
+return `<div class="sentence-builder-line">${sent.words.map((word,wi)=>{
+if(word==='.')return '.';
+if(sent.capIndexes.includes(wi)){
+const rest=word.slice(1);
+return `<input class="cap-input" maxlength="1" data-expected="${word[0]}" oninput="checkCapInput(this)">${rest} `;
+}
+return word+' ';
+}).join('')}</div>`;
+}).join('');
+}
+function checkCapInput(el){
+let val=el.value;
+const expected=el.getAttribute('data-expected');
+const code=val.charCodeAt(0);
+if(val.length===1&&code>=65&&code<=90&&val.toLowerCase()===expected){
+el.classList.add('correct-input');el.classList.remove('wrong-input');el.disabled=true;
+addStars(1);
+checkAllSentencesComplete();
+}else if(val.length>=1){
+el.classList.add('wrong-input');el.classList.remove('correct-input');
+el.value='';
+}
+}
+function checkAllSentencesComplete(){
+const inputs=document.querySelectorAll('#u4-sentence-container .cap-input');
+const allDone=[...inputs].every(i=>i.classList.contains('correct-input'));
+if(allDone){
+document.getElementById('u4-sentence-feedback').innerHTML='🎉 Perfect capitalization! "I have got a mum. Her name is Layla."';
+document.getElementById('u4-sentence-feedback').style.color='var(--correct)';
+completeSub('unit4','43');
+}
+}
+
+// ---------- UNIT 5 ----------
+const bodyPartsData=[{w:'head',e:'😀',plural:false},{w:'shoulders',e:'🤷',plural:true},{w:'knees',e:'🦵',plural:true},{w:'toes',e:'🦶',plural:true},{w:'eyes',e:'👀',plural:true},{w:'ears',e:'👂',plural:true},{w:'mouth',e:'👄',plural:false},{w:'nose',e:'👃',plural:false},{w:'hands',e:'✋',plural:true},{w:'legs',e:'🦵',plural:true}];
+function renderBodyParts(){
+document.getElementById('u5-body-grid').innerHTML=bodyPartsData.map(b=>`<div class="vocab-card" onclick="speakBodyPart('${b.w}',${b.plural})"><i data-lucide="volume-2" class="speaker-icon" style="width:16px;height:16px;"></i><div class="vocab-emoji">${b.e}</div><div class="vocab-word">${b.w}</div></div>`).join('');
+lucide.createIcons();
+}
+function speakBodyPart(w,plural){
+const sentence=plural?`These are my ${w}.`:`This is my ${w}.`;
+speakText(sentence,0.8);
+document.getElementById('u5-sentence-display').innerText=sentence;
+}
+function startBodyQuiz(){
+const qs=[...bodyPartsData].sort(()=>Math.random()-0.5).slice(0,6).map(b=>({q:`${b.e} ${b.w} — "This is" or "These are"?`,options:['This is','These are'],answer:b.plural?1:0}));
+runMiniQuiz('u5-quiz',qs,(s,t)=>{if(s>=t*0.6)completeSub('unit5','51');});
+}
+
+// ---------- UNIT 7 ----------
+// Tap-to-select-then-tap-to-place (native HTML5 drag-and-drop does not work on touchscreens,
+// so this works identically with touch, stylus, or mouse).
+const objRoomMap={'obj-shower':'bathroom','obj-bed':'bedroom','obj-tv':'livingroom','obj-cupboard':'kitchen'};
+let selectedHomeObject=null;
+let homePlacedCount=0;
+function selectHomeObject(id){
+const el=document.getElementById(id);
+if(el.classList.contains('placed'))return;
+document.querySelectorAll('#u7-draggables .draggable').forEach(d=>d.classList.remove('selected'));
+el.classList.add('selected');
+selectedHomeObject=id;
+const feedback=document.getElementById('u7-feedback');
+feedback.innerHTML='👉 Now tap the room where it belongs!';
+feedback.style.color='var(--dark)';
+}
+function placeHomeObject(room){
+const feedback=document.getElementById('u7-feedback');
+if(!selectedHomeObject){
+feedback.innerHTML='☝️ Tap an object first!';
+feedback.style.color='#f39c12';
+return;
+}
+const el=document.getElementById(selectedHomeObject);
+if(objRoomMap[selectedHomeObject]===room){
+const zone=document.querySelector(`#unit7 .drop-zone[data-room="${room}"]`);
+zone.appendChild(el);
+el.classList.remove('selected');
+el.classList.add('placed');
+feedback.innerHTML='🎯 Perfect placement!';feedback.style.color='var(--correct)';
+addStars(1);homePlacedCount++;
+selectedHomeObject=null;
+if(homePlacedCount===4)completeSub('unit7','71');
+}else{
+feedback.innerHTML='❌ Wrong room! Try again.';feedback.style.color='var(--wrong)';
+el.classList.remove('selected');
+selectedHomeObject=null;
+}
+}
+function initHomeDragDrop(){
+homePlacedCount=0;
+selectedHomeObject=null;
+document.querySelectorAll('#u7-draggables .draggable').forEach(d=>d.classList.remove('selected','placed'));
+}
+
+// ================= FINAL QUIZ =================
+const quizBank=[
+{q:"Which letter makes the sound in 'Apple'?",options:['A','B','C','D'],answer:0},
+{q:"Which letter makes the sound in 'Sun'?",options:['S','T','R','M'],answer:0},
+{q:"c + at = ?",options:['Cat','Bat','Cap','Cot'],answer:0},
+{q:"b + ag = ?",options:['Bat','Big','Bag','Bug'],answer:2},
+{q:"Find the missing letter: C_T",options:['A','O','U','E'],answer:0},
+{q:"Find the missing letter: D_G",options:['O','A','E','I'],answer:0},
+{q:"Is 'Run' a noun or a verb?",options:['Noun','Verb'],answer:1},
+{q:"Is 'Apple' a noun or a verb?",options:['Noun','Verb'],answer:0},
+{q:"Which word says 'the'?",options:['the','tree','they','then'],answer:0},
+{q:"Which word says 'said'?",options:['sad','said','side','send'],answer:1},
+{q:"'ch' makes the sound like in...",options:['Chair','Ship','Thumb','Phone'],answer:0},
+{q:"'sh' makes the sound like in...",options:['Chair','Ship','Thumb','Phone'],answer:1},
+{q:"How many vowels are there? (A E I O U)",options:['3','4','5','6'],answer:2},
+{q:"What color is a banana?",options:['Red','Yellow','Blue','Black'],answer:1},
+{q:"He is a ___.",options:['boy','girl (she)','teacher (she)','mum (she)'],answer:0},
+{q:"This is my nose. These are my ___.",options:['eye','eyes','nose','noses'],answer:1},
+{q:"Which room has a bed?",options:['Kitchen','Bathroom','Bedroom','Living Room'],answer:2},
+{q:"What is the capital first letter of 'i have got a mum'?",options:['i','I','1','!'],answer:1}
+];
+let quizQuestions=[];let quizIndex=0;let quizScore=0;
+function startQuiz(){
+quizQuestions=[...quizBank].sort(()=>Math.random()-0.5).slice(0,10);
+quizIndex=0;quizScore=0;
+document.getElementById('quiz-start-screen').style.display='none';
+document.getElementById('quiz-results-screen').style.display='none';
+document.getElementById('quiz-play-screen').style.display='block';
+loadQuizQuestion();
+}
+function loadQuizQuestion(){
+const item=quizQuestions[quizIndex];
+document.getElementById('quiz-progress-text').innerText=`Question ${quizIndex+1} of ${quizQuestions.length}`;
+document.getElementById('quiz-progress-fill').style.width=`${(quizIndex/quizQuestions.length)*100}%`;
+document.getElementById('quiz-question-text').innerText=item.q;
+document.getElementById('quiz-options').innerHTML=item.options.map((opt,i)=>`<button class="quiz-option-btn" onclick="answerQuiz(${i})">${opt}</button>`).join('');
+document.getElementById('quiz-feedback').innerText='';
+}
+function answerQuiz(i){
+const item=quizQuestions[quizIndex];
+const buttons=document.querySelectorAll('#quiz-options .quiz-option-btn');
+buttons.forEach(b=>b.onclick=null);
+if(i===item.answer){
+buttons[i].classList.add('correct');
+document.getElementById('quiz-feedback').innerHTML="🎉 Correct!";
+document.getElementById('quiz-feedback').style.color="var(--correct)";
+quizScore++;addStars(2);
+}else{
+buttons[i].classList.add('wrong');
+buttons[item.answer].classList.add('correct');
+document.getElementById('quiz-feedback').innerHTML="❌ Not quite!";
+document.getElementById('quiz-feedback').style.color="var(--wrong)";
+}
+setTimeout(()=>{
+quizIndex++;
+if(quizIndex<quizQuestions.length)loadQuizQuestion();
+else showQuizResults();
+},1400);
+}
+function showQuizResults(){
+document.getElementById('quiz-play-screen').style.display='none';
+document.getElementById('quiz-results-screen').style.display='block';
+document.getElementById('quiz-progress-fill').style.width='100%';
+const pct=Math.round((quizScore/quizQuestions.length)*100);
+let grade=pct>=90?'🏆 Superstar!':pct>=70?'🌟 Great Job!':pct>=50?'👍 Good Try!':'💪 Keep Practicing!';
+document.getElementById('quiz-final-score').innerText=`${quizScore} / ${quizQuestions.length} (${pct}%)`;
+document.getElementById('quiz-final-grade').innerText=grade;
+}
+
+// ================= PRINT =================
+function prepareAndPrint(worksheetId){
+document.querySelectorAll('.worksheet-preview').forEach(ws=>ws.style.display='none');
+document.querySelectorAll('.section').forEach(s=>s.classList.remove('print-active'));
+document.getElementById(worksheetId).style.display='block';
+document.getElementById('printables').classList.add('print-active');
+window.print();
+}
+
+// ================= BOOT =================
+window.onload=()=>{
+renderPhonicsAlphabet();
+initHandwritingMatchGame();
+initColorMatchGame();
+loadFindWord();
+buildFamilyMenu();
+updateWordDisplay();
+renderPhonicsGrid();
+renderSightWords();
+loadGrammarExercise();
+renderSchoolLanding();
+renderUnit1_1();
+renderUnit1_2();
+renderUnit1_4();
+renderIdFamilySelect();
+renderDaysOrder();
+renderPartsOfDay();
+renderNumberGrid();
+renderToys();
+renderCommunityVocab();
+renderFamilyTree();
+renderSentenceBuilder();
+renderBodyParts();
+initHomeDragDrop();
+
+// Set up whiteboard drawing surfaces
+['hw','name','age5','age6','age7','city'].forEach(setupWhiteboardDrawing);
+renderGuideLetter('wb-guide-age5','5',70);
+renderGuideLetter('wb-guide-age6','6',70);
+renderGuideLetter('wb-guide-age7','7',70);
+};
+</script>
+</body>
+</html>
